@@ -1,298 +1,224 @@
-# LegalCopilot — AI-Powered Terms & Conditions Analyzer
+# LegalCopilot
 
-A production-grade legal AI system that analyzes Terms & Conditions and Privacy Policies at clause level, detects risks, explains complex legal language, and provides structured visual insights.
+![Build](https://img.shields.io/badge/build-passing-brightgreen) ![Python](https://img.shields.io/badge/python-3.10%2B-blue) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688) ![License](https://img.shields.io/badge/license-MIT-blue)
 
----
-
-## Folder Structure
-
-```
-legalcopilot/
-├── backend/                          # FastAPI Python backend
-│   ├── main.py                       # Application entry point
-│   ├── requirements.txt              # Python dependencies
-│   ├── .env.example                  # Environment variables template
-│   ├── routers/
-│   │   ├── analyze.py                # POST /api/analyze — core analysis
-│   │   ├── chat.py                   # POST /api/chat — AI assistant
-│   │   ├── compare.py                # POST /api/compare — document comparison
-│   │   ├── export.py                 # POST /api/export — report generation
-│   │   └── health.py                 # GET /api/health — health check
-│   ├── services/
-│   │   ├── ai_service.py             # AI inference engine (Claude + rule-based)
-│   │   └── document_service.py       # PDF parsing and text processing
-│   └── models/
-│       └── schemas.py                # Pydantic request/response models
-│
-├── frontend/                         # Next.js React frontend
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── page.tsx              # Root page — view controller
-│   │   │   ├── layout.tsx            # HTML layout with fonts
-│   │   │   └── globals.css           # Global styles + CSS variables
-│   │   ├── components/
-│   │   │   ├── Header.tsx            # Top navigation bar
-│   │   │   ├── upload/
-│   │   │   │   └── UploadSection.tsx # File upload + text paste UI
-│   │   │   ├── dashboard/
-│   │   │   │   ├── Dashboard.tsx     # Main results orchestrator
-│   │   │   │   ├── RiskOverview.tsx  # Charts, gauge, timeline
-│   │   │   │   ├── SummaryPanel.tsx  # AI verdict + key risks
-│   │   │   │   └── RedFlagBanner.tsx # Critical alert banner
-│   │   │   ├── clauses/
-│   │   │   │   └── ClauseList.tsx    # Filtered clause cards
-│   │   │   ├── chat/
-│   │   │   │   └── ChatAssistant.tsx # AI chat interface
-│   │   │   ├── comparison/
-│   │   │   │   └── CompareView.tsx   # Two-doc comparison
-│   │   │   └── export/
-│   │   │       └── ExportPanel.tsx   # Download reports
-│   │   ├── lib/
-│   │   │   └── api.ts                # API client (axios)
-│   │   └── types/
-│   │       └── index.ts              # TypeScript types
-│   ├── package.json
-│   ├── tailwind.config.js
-│   ├── next.config.js
-│   ├── tsconfig.json
-│   └── .env.local
-│
-└── README.md
-```
+**AI-powered Terms & Conditions risk analyzer.** LegalCopilot parses legal documents, identifies risky clauses, scores overall risk, and lets users ask plain-language questions about what they're agreeing to — before they click "I Accept."
 
 ---
 
-## Quick Start
+## Live Demo
 
-### Prerequisites
-- Python 3.10+
-- Node.js 18+
-- An Anthropic API key (get one free at https://console.anthropic.com)
-
----
-
-### Step 1: Backend Setup
-
-```bash
-cd legalcopilot/backend
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate        # macOS/Linux
-# OR: venv\Scripts\activate     # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure environment
-cp .env.example .env
-# Edit .env and add your ANTHROPIC_API_KEY
-
-# Start the server
-python main.py
-# OR: uvicorn main:app --reload --port 8000
-```
-
-Backend runs at: http://localhost:8000
-API docs at: http://localhost:8000/api/docs
-
----
-
-### Step 2: Frontend Setup
-
-```bash
-cd legalcopilot/frontend
-
-# Install dependencies
-npm install
-
-# Start the dev server
-npm run dev
-```
-
-Frontend runs at: http://localhost:3000
+> Local deployment only at this time. Follow the [Quick Start](#quick-start) guide to run the app on your machine.
+>
+> Hosted demo — coming soon.
 
 ---
 
 ## Features
 
-### Core Analysis
-- Upload PDF or paste text
-- AI-powered clause segmentation and analysis
-- Risk scoring (0–100) per clause and overall
-- Risk levels: Low, Medium, High, Critical
-- 15 legal category classifications
-- AI confidence scoring
-
-### Risk Dashboard
-- Visual risk score gauge
-- Pie chart — risk distribution
-- Bar chart — risk by category
-- Timeline view — risk through document
-
-### Clause Viewer
-- All clauses with expandable details
-- Filter by risk level
-- Search by content or category
-- Red flag phrase highlighting
-- Plain-language explanations
-- User impact statements
-
-### AI Chat Assistant
-- Ask questions about the document
-- Powered by Claude API with rule-based fallback
-- Conversation history maintained
-- Suggested questions provided
-
-### Document Comparison
-- Compare two T&C documents side-by-side
-- Score comparison with winner declaration
-- Category-level breakdown
-- Detailed verdict explanation
-
-### Export
-- JSON report download (client-side)
-- Text report via backend API
-- REST API for integration
-
-### Red Flag Detection
-- Critical alert banner for dangerous documents
-- Specific red flag phrase extraction
-- "Most dangerous clauses" section
-
----
-
-## API Reference
-
-### POST /api/analyze
-Upload a file or form-post text for analysis.
-
-**Form fields:**
-- `file` (optional): PDF, TXT, or MD file
-- `text` (optional): Raw text string
-- `document_name` (optional): Display name
-
-**Response:**
-```json
-{
-  "document_id": "uuid",
-  "overall_risk_score": 72,
-  "risk_distribution": { "low": 3, "medium": 4, "high": 5, "critical": 2 },
-  "clauses": [
-    {
-      "id": "uuid",
-      "text": "...",
-      "category": "Data Sharing",
-      "risk_level": "High",
-      "risk_score": 68,
-      "user_impact": "Your data may be shared with advertisers.",
-      "explanation": "...",
-      "confidence": 0.91,
-      "red_flags": ["share with advertisers"]
-    }
-  ],
-  "summary": {
-    "overall_risk_score": 72,
-    "risk_level": "High",
-    "key_risks": ["..."],
-    "user_rights": ["..."],
-    "verdict": "...",
-    "red_flag_count": 7
-  },
-  "processing_time": 2.4
-}
-```
-
-### POST /api/chat
-```json
-{
-  "message": "Can they sell my data?",
-  "document_context": "optional summary",
-  "conversation_history": []
-}
-```
-
-### POST /api/compare
-```json
-{
-  "document_a_text": "...",
-  "document_b_text": "...",
-  "document_a_name": "Google ToS",
-  "document_b_name": "Apple ToS"
-}
-```
-
-### POST /api/export
-```json
-{
-  "analysis_data": { ... },
-  "format": "json"
-}
-```
-
----
-
-## AI Architecture
-
-```
-User Input (PDF / Text)
-        |
-        v
-Document Service (PDF parsing, text cleaning)
-        |
-        v
-Clause Segmentation (regex + NLP heuristics)
-        |
-        v
-AI Inference Service
-  ├── Primary: Anthropic Claude API (claude-sonnet-4)
-  │     └── Returns: category, risk_level, risk_score,
-  │                  user_impact, explanation, red_flags, confidence
-  └── Fallback: Rule-based keyword engine
-        └── Pattern matching on 50+ legal risk keywords
-        |
-        v
-Risk Aggregation + Summary Generation
-        |
-        v
-Structured JSON Response → Frontend
-```
-
----
-
-## Design System
-
-- **Colors**: Light theme — white/light grey base, high-contrast text
-- **Typography**: DM Sans (body), DM Serif Display (headings), DM Mono (code)
-- **Risk Colors**: Green (#16a34a) Low | Amber (#b45309) Medium | Red (#dc2626) High | Dark Red (#7c2d12) Critical
-- **No dark mode** — clean professional light interface throughout
+- **Document Analysis** — Upload a PDF or paste raw text; the app segments the document into clauses and assigns each a risk level (Low / Medium / High / Critical) and a 0–100 risk score.
+- **Risk Dashboard** — Visual summary showing overall risk score, risk distribution chart, red-flag banner, clause list, and a plain-English verdict.
+- **AI Chat Assistant** — Ask questions about the document in natural language. Powered by Claude with a keyword-based fallback when the API is unavailable.
+- **Document Comparison** — Paste two T&C documents side-by-side and get a category-by-category breakdown of which is safer.
+- **Export** — Download the full analysis as a JSON data file or a human-readable `.txt` report.
+- **Graceful Degradation** — Every AI call has a deterministic rule-based fallback, so the app works even without an Anthropic API key.
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 14, React 18, TypeScript |
-| Styling | Tailwind CSS, CSS Variables |
+|---|---|
+| Frontend | Next.js 14, React 18, TypeScript, Tailwind CSS |
 | Charts | Recharts |
-| Icons | Lucide React |
-| HTTP | Axios |
-| File Upload | React Dropzone |
-| Toasts | React Hot Toast |
-| Backend | FastAPI (Python) |
-| AI | Anthropic Claude API |
-| PDF Parsing | pdfplumber |
-| Validation | Pydantic v2 |
-| HTTP Client | httpx (async) |
+| Animations | Framer Motion |
+| HTTP client (frontend) | Axios |
+| File upload | react-dropzone |
+| Backend | FastAPI, Python 3.10+, Uvicorn |
+| AI Engine | Anthropic Claude (`claude-sonnet-4-20250514`) with rule-based fallback |
+| PDF parsing | pdfplumber (primary), PyPDF2 (fallback) |
+| Data validation | Pydantic v2 |
 
 ---
 
-## Production Notes
+## AI Model
 
-- Replace in-memory `document_cache` in `analyze.py` with Redis
-- Add authentication middleware for multi-user deployments
-- Rate limit the `/api/analyze` endpoint
-- Use environment-based CORS origins
-- Set up PostgreSQL for persistent analysis history
-- Add Sentry for error monitoring
+LegalCopilot uses a **two-tier inference strategy** so the app remains functional with or without an API key:
+
+| Tier | Engine | When Used |
+|---|---|---|
+| **Primary** | Anthropic Claude `claude-sonnet-4-20250514` | When `ANTHROPIC_API_KEY` is set and the API is reachable |
+| **Fallback** | Rule-based keyword engine | API unavailable, rate-limited, or key not configured |
+
+The rule-based fallback covers 50+ curated risk keywords across four severity levels and 15 legal clause categories. Clauses analysed via fallback return a lower `confidence` score (0.72 vs 0.85+) so the frontend can surface the distinction if needed.
+
+---
+
+## Prerequisites
+
+- **Node.js** 18+ and npm
+- **Python** 3.10+
+- An **Anthropic API key** (optional — the app runs with rule-based analysis without it)
+
+---
+
+## Quick Start
+
+### Automated setup
+
+```bash
+# macOS / Linux
+chmod +x setup.sh && ./setup.sh
+
+# Windows
+setup.bat
+```
+
+### Manual setup
+
+**Backend**
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+cp .env.example .env
+# Edit .env and set ANTHROPIC_API_KEY=sk-ant-...
+
+python main.py
+# API available at http://localhost:8000
+# Swagger docs at http://localhost:8000/api/docs
+```
+
+**Frontend**
+
+```bash
+cd frontend
+npm install
+# .env.local already points to http://localhost:8000/api
+npm run dev
+# App available at http://localhost:3000
+```
+
+---
+
+## Environment Variables
+
+### Backend (`backend/.env`)
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `ANTHROPIC_API_KEY` | No | `""` | Enables AI-powered clause analysis and chat |
+| `HOST` | No | `0.0.0.0` | Uvicorn bind address |
+| `PORT` | No | `8000` | Uvicorn port |
+| `RELOAD` | No | `true` | Hot-reload on file changes |
+| `LOG_LEVEL` | No | `info` | Logging verbosity |
+
+### Frontend (`frontend/.env.local`)
+
+| Variable | Default | Description |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000/api` | Backend base URL |
+
+---
+
+## API Reference
+
+Full interactive docs are available at `http://localhost:8000/api/docs` when the backend is running.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | Health check |
+| `POST` | `/api/analyze` | Analyze a PDF or text file (multipart) |
+| `POST` | `/api/analyze/text` | Analyze raw JSON text body |
+| `GET` | `/api/document/{doc_id}` | Retrieve cached analysis by ID |
+| `POST` | `/api/chat` | Chat with AI about a document |
+| `POST` | `/api/compare` | Compare two documents |
+| `POST` | `/api/export` | Export report as JSON or plain text |
+
+---
+
+## How Analysis Works
+
+1. **Ingestion** — Text is extracted from the uploaded file (PDF via pdfplumber/PyPDF2, plain text directly) and cleaned (whitespace normalization, page-number stripping).
+2. **Segmentation** — The document is split into clauses using numbered-section patterns, paragraph breaks, or sentence chunking as fallbacks.
+3. **AI Analysis** — Up to 20 clauses are sent to Claude in one batch with a structured prompt requesting category, risk level, risk score, plain-English impact, explanation, and red flags.
+4. **Rule-based Fallback** — If the Claude API is unavailable or returns no result for a clause, keyword matching against curated risk dictionaries assigns category and risk level.
+5. **Scoring** — An overall score is computed as a weighted average of individual clause scores, with Critical clauses weighted 4× and Low clauses weighted 1×.
+6. **Caching** — Completed analyses are stored in an in-memory dict keyed by UUID, enabling the Chat and Export features to reference the same document without re-analysis.
+
+---
+
+## Supported File Types
+
+- `.pdf` — Parsed with pdfplumber; falls back to PyPDF2
+- `.txt` — UTF-8 plain text
+- `.md` — Markdown (treated as plain text)
+
+Maximum document size: **500,000 characters**.
+
+---
+
+## Project Structure
+
+```
+legalcopilot/
+├── backend/
+│   ├── main.py                  # FastAPI app, middleware, router registration
+│   ├── requirements.txt
+│   ├── .env.example
+│   ├── models/
+│   │   └── schemas.py           # Pydantic request/response models
+│   ├── routers/
+│   │   ├── analyze.py           # Document ingestion & analysis endpoints
+│   │   ├── chat.py              # Conversational Q&A endpoint
+│   │   ├── compare.py           # Side-by-side document comparison
+│   │   ├── export.py            # Report download (JSON / TXT)
+│   │   └── health.py            # Health check
+│   ├── services/
+│   │   ├── ai_service.py        # Claude API calls + rule-based fallback
+│   │   └── document_service.py  # PDF extraction, text cleaning, validation
+│   └── utils/
+├── frontend/
+│   ├── package.json
+│   ├── next.config.js
+│   ├── tailwind.config.js
+│   └── src/
+│       ├── app/
+│       │   ├── page.tsx         # Root page, view state machine
+│       │   ├── layout.tsx
+│       │   └── globals.css
+│       ├── components/
+│       │   ├── Header.tsx
+│       │   ├── upload/          # UploadSection (drag-drop + paste)
+│       │   ├── dashboard/       # Dashboard, RiskOverview, SummaryPanel, RedFlagBanner
+│       │   ├── clauses/         # ClauseList
+│       │   ├── chat/            # ChatAssistant
+│       │   ├── comparison/      # CompareView
+│       │   └── export/          # ExportPanel
+│       ├── lib/
+│       │   └── api.ts           # Typed Axios wrappers for all endpoints
+│       └── types/
+│           └── index.ts         # Shared TypeScript interfaces and enums
+├── setup.sh
+├── setup.bat
+└── README.md
+```
+
+---
+
+## Limitations & Production Notes
+
+- **In-memory document cache** — Analyzed documents are stored in a Python dict. Data is lost on restart. For production, replace with Redis or a database.
+- **No authentication** — The API has no auth layer. Add OAuth2 or API key middleware before any public deployment.
+- **CORS** — Currently allows only `localhost:3000`. Update `allow_origins` in `main.py` for your production domain.
+- **Clause cap** — A maximum of 50 clauses are segmented per document and 20 are sent to Claude per request. Very long documents may have lower coverage.
+- **Not legal advice** — LegalCopilot is an educational tool. It does not constitute legal advice and should not be used as a substitute for qualified legal counsel.
+
+---
+
+## License
+
+See `LICENSE` for terms.
