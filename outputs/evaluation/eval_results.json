@@ -1,0 +1,12 @@
+{
+  "risk_accuracy": 0.7066666666666667,
+  "risk_f1_macro": 0.2760416666666667,
+  "risk_f1_weighted": 0.5852083333333333,
+  "category_accuracy": 0.8333333333333334,
+  "category_f1_macro": 0.8287113431603588,
+  "rougeL_mean": 0.5300614564158156,
+  "rougeL_median": 0.5798319327731092,
+  "json_parse_rate": 1.0,
+  "eval_sample_size": 150,
+  "valid_risk_predictions": 150
+}

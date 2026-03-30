@@ -1,0 +1,35 @@
+{
+  "base_model": "mistral-ai/mistral \u2014 pytorch/7b-instruct-v0.1-hf/1",
+  "base_model_path": "/kaggle/input/models/mistral-ai/mistral/pytorch/7b-instruct-v0.1-hf/1",
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "max_seq_length": 512,
+  "train_samples": 5397,
+  "val_samples": 600,
+  "train_loss": 0.23781659247023887,
+  "metrics": {
+    "train_runtime": 27278.5199,
+    "train_samples_per_second": 0.594,
+    "train_steps_per_second": 0.037,
+    "total_flos": 2.3523561302831923e+17,
+    "train_loss": 0.23781659247023887,
+    "epoch": 2.9972206781545303
+  },
+  "categories": [
+    "Data Collection",
+    "Data Sharing",
+    "Account Termination",
+    "Arbitration & Disputes",
+    "Auto-Renewal & Billing",
+    "Liability & Warranty",
+    "Intellectual Property",
+    "User Rights",
+    "General Terms"
+  ],
+  "risk_levels": [
+    "Low",
+    "Medium",
+    "High",
+    "Critical"
+  ]
+}
